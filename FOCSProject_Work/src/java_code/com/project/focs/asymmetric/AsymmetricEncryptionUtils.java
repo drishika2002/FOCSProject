@@ -1,4 +1,4 @@
-package com.project.focs.asymmetric;
+package java_code.com.project.focs.asymmetric;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;

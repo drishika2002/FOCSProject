@@ -12,9 +12,15 @@ public class DigitalSignature {
     private static final String SIGN_ALGO = "SHA256withRSA";
 
     public static byte[] createDigitalSign(byte[] ip, PrivateKey prk) throws Exception {
+
+        // Creating a signature object where required signature algorithm is SHA256withRSA
         Signature sign = Signature.getInstance(SIGN_ALGO);
         sign.initSign(prk);
+
+        // byte array ip represents the data to be signed or verified...
         sign.update(ip);
+
+        // sign() method of Signature class returns the signature bytes of the updated data...
         return sign.sign();
     }
 
@@ -31,26 +37,22 @@ public class DigitalSignature {
         String ans = input.next();
 
         if(ans.equals("Yes")) {
+            System.out.println("Enter the data to be signed: ");
             String text = input.next();
             byte[] ip = text.getBytes();
 
             KeyPair kp = AsymmetricEncryptionUtils.generateRSAKeyPair();
+            System.out.println("Private Key: " + kp.getPrivate().getEncoded());
+            System.out.println("Public Key:  " + kp.getPublic().getEncoded());
+
+            byte[] cipherText = AsymmetricEncryptionUtils.performRSAEncryption(text, kp.getPrivate());
+            System.out.println("Encrypted message: " + cipherText);
+            String decryptedText = AsymmetricEncryptionUtils.performRSADecryption(cipherText, kp.getPublic());
+            System.out.println("Decrypted message: " + decryptedText);
+
             byte[] signature = DigitalSignature.createDigitalSign(ip, kp.getPrivate());
             System.out.println(signature);
             System.out.println("Verification: " + verification(ip, signature, kp.getPublic()));
         }
-
-//        else {
-//            System.out.println("Using a sample text file: demo.txt to test digital signature\n");
-//
-//            URL uri = this.getClass().getClassLoader().getResource("demo.txt");
-//            Path path = Paths.get(uri.toURI());
-//            byte[] ip = Files.readAllBytes(FOCSProject_Work/src/resources/demo.txt);
-//
-//            KeyPair kp = AsymmetricEncryptionUtils.generateRSAKeyPair();
-//            byte[] signature = DigitalSignature.createDigitalSign(ip, kp.getPrivate());
-//            System.out.println(signature);
-//            System.out.println("Verification: " + verification(ip, signature, kp.getPublic()));
-//        }
     }
 }
